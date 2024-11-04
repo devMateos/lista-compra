@@ -1,6 +1,7 @@
 <template>
   <div class="category-view">
-    <h2>Productos en {{ categoryName }}</h2>
+    <h2 v-if="categoryId === 'all'">Todos los productos</h2>
+    <h2 v-else>Productos en {{ categoryName }}</h2>
 
     <!-- Filtros -->
     <div class="filters">
@@ -86,10 +87,16 @@ const productToDelete = ref(null)
 // Función para cargar los productos de la categoría
 async function loadProducts() {
   try {
-    const q = query(
-      collection(db, 'products'),
-      where('categoryId', '==', categoryId),
-    )
+    let q
+
+    if (categoryId === 'all') {
+      q = query(collection(db, 'products'))
+    } else {
+      q = query(
+        collection(db, 'products'),
+        where('categoryId', '==', categoryId),
+      )
+    }
     const querySnapshot = await getDocs(q)
     products.value = querySnapshot.docs
       .map(doc => ({

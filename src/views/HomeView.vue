@@ -9,6 +9,9 @@
         @click="goToCategory(category.id)"
       />
     </div>
+    <button @click="goToAllProducts" class="all-products-btn">
+      Ver todos los productos
+    </button>
   </div>
 </template>
 
@@ -39,6 +42,10 @@ const goToCategory = categoryId => {
 }
 
 onMounted(fetchCategories)
+
+const goToAllProducts = () => {
+  router.push('/category/all')
+}
 </script>
 
 <style scoped>
@@ -58,5 +65,17 @@ onMounted(fetchCategories)
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
   padding: 1rem;
+}
+.all-products-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.all-products-btn:hover {
+  background-color: #45a049;
 }
 </style>
