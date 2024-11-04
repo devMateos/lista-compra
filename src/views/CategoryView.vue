@@ -14,7 +14,7 @@
         @click="toggleFilter('showNotNeeded')"
         :class="{ active: showNotNeeded }"
       >
-        Mostrar "No lo necesito"
+        Mostrar "Terminado"
       </button>
       <button
         @click="toggleFilter('showNeeded')"
@@ -194,7 +194,7 @@ function getProductClass(product) {
 // Función para obtener el texto según el estado
 function getStatusText(product) {
   if (product.adquirido) return 'Ya lo tengo'
-  if (!product.necesario) return 'No lo necesito'
+  if (!product.necesario) return 'Terminado'
   return 'Necesito comprarlo'
 }
 
