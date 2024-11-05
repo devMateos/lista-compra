@@ -63,11 +63,11 @@ import {
   collection,
   query,
   where,
-  getDocs,
   updateDoc,
   deleteDoc,
   doc,
   getDoc,
+  onSnapshot,
 } from 'firebase/firestore'
 
 const route = useRoute()
@@ -85,19 +85,16 @@ const showModal = ref(false)
 const productToDelete = ref(null)
 
 // Función para cargar los productos de la categoría
-async function loadProducts() {
-  try {
-    let q
+function loadProductsRealtime() {
+  let q
+  if (categoryId === 'all') {
+    q = query(collection(db, 'products'))
+  } else {
+    q = query(collection(db, 'products'), where('categoryId', '==', categoryId))
+  }
 
-    if (categoryId === 'all') {
-      q = query(collection(db, 'products'))
-    } else {
-      q = query(
-        collection(db, 'products'),
-        where('categoryId', '==', categoryId),
-      )
-    }
-    const querySnapshot = await getDocs(q)
+  // Configurar el listener de Firestore
+  onSnapshot(q, querySnapshot => {
     products.value = querySnapshot.docs
       .map(doc => ({
         id: doc.id,
@@ -107,9 +104,7 @@ async function loadProducts() {
           doc.data().necesario !== undefined ? doc.data().necesario : true, // 'necesario' por defecto a true
       }))
       .sort((a, b) => a.name.localeCompare(b.name)) // Orden alfabético por nombre
-  } catch (error) {
-    console.error('Error al cargar productos:', error)
-  }
+  })
 }
 
 // Cargar el nombre de la categoría
@@ -207,7 +202,8 @@ function getStatusText(product) {
 
 onMounted(() => {
   loadCategoryName()
-  loadProducts()
+  /* loadProducts() */
+  loadProductsRealtime()
 })
 </script>
 
