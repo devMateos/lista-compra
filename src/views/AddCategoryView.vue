@@ -1,6 +1,7 @@
 <template>
-  <div class="add-category-container">
-    <h1 class="title">Añadir Nueva Categoría</h1>
+  <div class="add-category-view">
+    <div class="add-category-container">
+      <h1 class="title">Añadir Nueva Categoría</h1>
     <form @submit.prevent="addCategory" class="add-category-form">
       <div>
         <label for="name">Nueva Categoría</label>
@@ -27,7 +28,8 @@
 
       <button type="submit" class="button primary-light big">Guardar Categoría</button>
     </form>
-    <p v-if="message" class="message">{{ message }}</p>
+      <p v-if="message" class="message">{{ message }}</p>
+    </div>
   </div>
 </template>
 
@@ -73,6 +75,9 @@ const addCategory = async () => {
 </script>
 
 <style scoped>
+.add-category-view {
+  padding: var(--spacing-M);
+}
 .add-category-container {
   border: var(--border-02);
   border-radius: 8px;

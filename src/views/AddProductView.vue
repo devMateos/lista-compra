@@ -1,6 +1,7 @@
 <template>
-  <div class="add-product">
-    <div class="title">
+  <div class="add-product-view">
+    <div class="add-product">
+      <div class="title">
       <img src="/src/assets/icons/new.svg" alt="">
       <h2>Nuevo Producto</h2>
     </div>
@@ -34,7 +35,8 @@
       <button class="button big primary-light" type="submit">Añadir Producto</button>
     </form>
 
-    <p v-if="message" class="message">{{ message }}</p>
+      <p v-if="message" class="message">{{ message }}</p>
+    </div>
   </div>
 </template>
 
@@ -82,6 +84,9 @@ const addProduct = async () => {
 </script>
 
 <style scoped>
+.add-product-view {
+  padding: var(--spacing-M);
+}
 .add-product {
   border: var(--border-02);
   border-radius: 8px;

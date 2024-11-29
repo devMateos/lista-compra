@@ -202,7 +202,6 @@ header {
 }
 main {
   overflow-y: auto;
-  padding: var(--spacing-M);
 }
 main::-webkit-scrollbar {
   background-color: transparent;

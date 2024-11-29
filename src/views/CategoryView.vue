@@ -283,6 +283,7 @@ onMounted(() => {
   gap: var(--spacing-M);
   max-width: 500px;
   margin: 0 auto;
+  padding: var(--spacing-M);
 }
 
 .filters {
