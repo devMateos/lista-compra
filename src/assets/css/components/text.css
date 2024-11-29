@@ -1,0 +1,39 @@
+/* Text */
+label,
+li,
+p,
+div,
+.body {
+  font-family: var(--font);
+  font-size: var(--font-size-S);
+  font-weight: var(--regular);
+}
+small,
+.small {
+  font-family: var(--font);
+  font-size: var(--font-size-XS);
+  font-weight: var(--regular);
+}
+
+/* Headings */
+h1,
+.h1 {
+  font-family: var(--font);
+  font-size: var(--font-size-L);
+  font-weight: bold;
+}
+h2,
+.h2 {
+  font-family: var(--font);
+  font-size: var(--font-size-M);
+  font-weight: bold;
+}
+
+/* Links */
+.link {
+  color: var(--color-neutral-black);
+  font-weight: bold;
+}
+.link:hover {
+  color: var(--color-action-primary);
+}

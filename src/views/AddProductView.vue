@@ -1,10 +1,14 @@
 <template>
   <div class="add-product">
-    <h2>Añadir Nuevo Producto</h2>
+    <div class="title">
+      <img src="/src/assets/icons/new.svg" alt="">
+      <h2>Nuevo Producto</h2>
+    </div>
     <form @submit.prevent="addProduct">
       <div class="form-group">
         <label for="productName">Nombre del Producto:</label>
         <input
+          class="form__input"
           type="text"
           id="productName"
           v-model="productName"
@@ -15,7 +19,7 @@
 
       <div class="form-group">
         <label for="category">Categoría:</label>
-        <select id="category" v-model="selectedCategory" required>
+        <select class="form__input" id="category" v-model="selectedCategory" required>
           <option value="" disabled>Selecciona una categoría</option>
           <option
             v-for="category in categories"
@@ -27,7 +31,7 @@
         </select>
       </div>
 
-      <button type="submit">Añadir Producto</button>
+      <button class="button big primary-light" type="submit">Añadir Producto</button>
     </form>
 
     <p v-if="message" class="message">{{ message }}</p>
@@ -67,7 +71,7 @@ const addProduct = async () => {
       categoryId: selectedCategory.value,
       createdAt: new Date(),
     })
-    message.value = 'Producto añadido con éxito'
+    message.value = 'Producto añadido con éxito 😎'
     productName.value = ''
     selectedCategory.value = ''
   } catch (error) {
@@ -79,55 +83,41 @@ const addProduct = async () => {
 
 <style scoped>
 .add-product {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
+  border: var(--border-02);
   border-radius: 8px;
-  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 60px var(--spacing-L)
+}
+.title {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-XS);
+  justify-content: center;
+  margin-bottom: var(--spacing-M);
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
 }
 
 label {
-  display: block;
-  font-weight: bold;
+  margin-bottom: var(--spacing-S);
+  font-weight: bold
 }
 
-input,
-select {
-  width: -webkit-fill-available;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-button {
+.form__input {
   width: 100%;
-  padding: 0.7rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 .message {
   margin-top: 1rem;
   text-align: center;
-  color: green;
+  font-weight: bold;
 }
 </style>

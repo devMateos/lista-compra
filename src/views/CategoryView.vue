@@ -1,29 +1,40 @@
 <template>
   <div class="category-view">
-    <h2 v-if="categoryId === 'all'">Todos los productos</h2>
-    <h2 v-else>Productos en {{ categoryName }}</h2>
 
     <!-- Filtros -->
     <div class="filters">
       <button
         @click="toggleFilter('showAcquired')"
+        class="button small-btn primary-light"
         :class="{ active: showAcquired }"
       >
-        Mostrar "Ya lo tengo"
+        Comprado
       </button>
       <button
         @click="toggleFilter('showNotNeeded')"
+        class="button small-btn primary-light"
         :class="{ active: showNotNeeded }"
       >
-        Mostrar "Terminado"
+        Terminado
       </button>
       <button
         @click="toggleFilter('showNeeded')"
+        class="button small-btn primary-light"
         :class="{ active: showNeeded }"
       >
-        Mostrar "Necesito comprarlo"
+        Necesario
       </button>
     </div>
+
+    <!-- Buscador -->
+    <input
+      class="form__input"
+      type="text"
+      v-model="searchTerm"
+      id="search"
+      placeholder="Buscar producto"
+      required
+    />
 
     <!-- Lista de productos -->
     <ul class="product-list">
@@ -31,25 +42,56 @@
         v-for="product in filteredProducts"
         :key="product.id"
         class="product-item"
-      >
+        :class="getProductClass(product)"
+        >
+        <!-- Botón de eliminación -->
+        <div>
+          <button @click="confirmDelete(product)" class="edit-btn">
+            <img src="/src/assets/icons/edit.svg" alt="">
+          </button>
+          <label @click="toggleProductStatus(product)">
+            <span class="product-name">
+              {{ product.name }}
+            </span>
+          </label>
+        </div>
         <label @click="toggleProductStatus(product)">
-          <span :class="getProductClass(product)">
-            {{ product.name }} - {{ getStatusText(product) }}
+          <span class="product-tag">
+            {{ getStatusText(product) }}
           </span>
         </label>
-        <!-- Botón de eliminación -->
-        <button @click="confirmDelete(product)" class="delete-btn">🗑️</button>
       </li>
     </ul>
 
     <!-- Modal de confirmación -->
-    <div v-if="showModal" class="modal-overlay">
-      <div class="modal">
-        <p>
-          ¿Estás seguro de que quieres eliminar {{ productToDelete?.name }}?
-        </p>
-        <button @click="deleteProduct" class="confirm-btn">Sí, eliminar</button>
-        <button @click="cancelDelete" class="cancel-btn">Cancelar</button>
+    <div v-if="showModal" class="modal-backdrop">
+      <div class="modal-product" v-if="!deleteConfirmation">
+        <h2>Editar producto</h2>
+        <div class="form__group">
+          <label for="newProductName">Nombre del producto</label>
+          <input
+            class="form__input"
+            v-model="newProductName"
+            type="text"
+            placeholder="Nuevo nombre"
+          />
+        </div>
+        <div class="modal-actions">
+          <button class="button big white" @click="closeEditModal">Cancelar</button>
+          <button class="button big green" @click="updateProductName">Guardar</button>
+        </div>
+        <button class="button small-btn red delete" @click="deleteConfirmation = true">
+          <img src="/src/assets/icons/trash.svg" alt="">
+        </button>
+      </div>
+      <!-- Modal para eliminar la categoría -->
+      <div class="modal-product" v-if="deleteConfirmation">
+        <h2>Eliminar producto</h2>
+        <p>¿Seguro de que quieres eliminar para siempre este producto?</p>
+        <div class="modal-actions">
+          <button class="button big white" @click="closeEditModal">Cancelar</button>
+          <button class="button big red" @click="deleteProduct">Eliminar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -80,9 +122,13 @@ const showAcquired = ref(true)
 const showNotNeeded = ref(true)
 const showNeeded = ref(true)
 
-// Estado del modal de confirmación
+// Estado del modal y variables relacionadas
 const showModal = ref(false)
-const productToDelete = ref(null)
+const deleteConfirmation = ref(false)
+const productToEdit = ref(null)
+const newProductName = ref('')
+
+const searchTerm = ref('')
 
 // Función para cargar los productos de la categoría
 function loadProductsRealtime() {
@@ -107,6 +153,9 @@ function loadProductsRealtime() {
   })
 }
 
+const emit = defineEmits(['updateCategoryName'])
+
+
 // Cargar el nombre de la categoría
 async function loadCategoryName() {
   try {
@@ -114,6 +163,7 @@ async function loadCategoryName() {
     const categoryDoc = await getDoc(categoryRef)
     if (categoryDoc.exists()) {
       categoryName.value = categoryDoc.data().name
+      emit('updateCategoryName', categoryName)
     }
   } catch (error) {
     console.error('Error al cargar nombre de categoría:', error)
@@ -153,34 +203,54 @@ function toggleFilter(filter) {
 // Computed para obtener los productos filtrados
 const filteredProducts = computed(() => {
   return products.value.filter(product => {
+    // Primero aplicar el filtro de búsqueda
+    if (!product.name.toLowerCase().includes(searchTerm.value.toLowerCase())) {
+      return false
+    }
+
+    // Luego aplicar los filtros de estado
     if (product.adquirido && !showAcquired.value) return false
-    if (!product.adquirido && !product.necesario && !showNotNeeded.value)
-      return false
-    if (!product.adquirido && product.necesario && !showNeeded.value)
-      return false
+    if (!product.adquirido && !product.necesario && !showNotNeeded.value) return false
+    if (!product.adquirido && product.necesario && !showNeeded.value) return false
     return true
   })
 })
 
-// Funciones para el modal de confirmación
+// Funciones para el modal
 function confirmDelete(product) {
-  productToDelete.value = product
+  productToEdit.value = product
+  newProductName.value = product.name
   showModal.value = true
 }
 
-function cancelDelete() {
-  productToDelete.value = null
+function closeEditModal() {
   showModal.value = false
+  deleteConfirmation.value = false
+  productToEdit.value = null
+  newProductName.value = ''
+}
+
+async function updateProductName() {
+  if (!newProductName.value.trim()) return
+
+  try {
+    const productRef = doc(db, 'products', productToEdit.value.id)
+    await updateDoc(productRef, {
+      name: newProductName.value.trim()
+    })
+    closeEditModal()
+  } catch (error) {
+    console.error('Error al actualizar nombre del producto:', error)
+  }
 }
 
 async function deleteProduct() {
+  if (!productToEdit.value) return
+
   try {
-    const productRef = doc(db, 'products', productToDelete.value.id)
+    const productRef = doc(db, 'products', productToEdit.value.id)
     await deleteDoc(productRef)
-    products.value = products.value.filter(
-      p => p.id !== productToDelete.value.id,
-    )
-    cancelDelete()
+    closeEditModal()
   } catch (error) {
     console.error('Error al eliminar producto:', error)
   }
@@ -195,116 +265,167 @@ function getProductClass(product) {
 
 // Función para obtener el texto según el estado
 function getStatusText(product) {
-  if (product.adquirido) return 'Ya lo tengo'
+  if (product.adquirido) return 'Comprado'
   if (!product.necesario) return 'Terminado'
-  return 'Necesito comprarlo'
+  return 'Necesario'
 }
 
 onMounted(() => {
   loadCategoryName()
-  /* loadProducts() */
   loadProductsRealtime()
 })
 </script>
 
 <style scoped>
 .category-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
   max-width: 500px;
   margin: 0 auto;
-  padding: 1rem;
-  text-align: center;
-}
-
-h2 {
-  margin-bottom: 1rem;
 }
 
 .filters {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
+  gap: var(--spacing-S);
 
-button.active {
-  background-color: #4caf50;
-  color: white;
+  .button {
+    width: 100%;
+  }
 }
 
 .product-list {
-  list-style-type: none;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-item {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
-  margin: 0.5rem 0;
+  padding: var(--spacing-S) var(--spacing-XS);
+
+  > div:first-of-type {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-S)
+  }
+}
+.product-item:not(:last-of-type) {
+  border-bottom: solid 1px var(--gray)
 }
 
-.delete-btn {
-  background: transparent;
-  border: none;
+.product-name {
   cursor: pointer;
-  color: #f44336;
-  font-size: 1.2em;
+  font-size: var(--font-size-M);
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.edit-btn {
+  align-items: center;
+  aspect-ratio: 1;
+  background-color: var(--white);
+  border: var(--border-01);
+  border-radius: 4px;
+  box-shadow: var(--small-shadow);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-XS);
+}
+.edit-btn:active {
+  box-shadow: var(--small-shadow-inverse);
+  transform: translate(3px, 3px);
+}
+
+.product-tag {
+  align-items: center;
+  border: var(--border-01);
+  border-radius: 4px;
+  color: var(--white);
+  display: flex;
+  justify-content: center;
+  min-width: 96px;
+  padding: var(--spacing-XS);
+  text-shadow:
+    -1px -1px 0 var(--black),
+    1px -1px 0 var(--black),
+    -1px 1px 0 var(--black),
+    1px 1px 0 var(--black);
+}
+
+/* Estilos para el modal */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 
-.modal {
-  background: white;
-  padding: 1rem;
+.modal-product {
+  background-color: var(--white);
+  border: var(--border-01);
   border-radius: 8px;
-  text-align: center;
-  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
+  max-width: 400px;
+  padding: var(--spacing-M);
+  position: relative;
+  width: 90%;
+
+  .form__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-S);
+
+    label {
+      font-weight: bold;
+    }
+  }
+  .button.delete {
+    position: absolute;
+    right: var(--spacing-M);
+    top: var(--spacing-M);
+  }
 }
 
-.confirm-btn {
-  background-color: #f44336;
-  color: white;
-  margin-right: 0.5rem;
-}
+.modal-actions {
+  display: flex;
+  gap: var(--spacing-M);
 
-.cancel-btn {
-  background-color: #ccc;
+  .button {
+    flex: 1;
+  }
 }
 
 label {
   cursor: pointer;
   display: flex;
   align-items: center;
-
-  span {
-    border-radius: 4px;
-    color: white;
-    padding: 0.2rem 0.4rem;
-  }
 }
 
 .acquired {
-  text-decoration: line-through;
-  background-color: #1f845a;
+
+  .product-tag {
+    background-color: #1f845a;
+  }
 }
 
 .not-needed {
-  background-color: #ff9800;
-  font-style: italic;
+  .product-tag {
+    background-color: #ff9800;
+  }
 }
 
 .needed {
-  background-color: #c9372c;
-  font-weight: bold;
+  .product-tag {
+    background-color: #c9372c;
+  }
 }
 </style>

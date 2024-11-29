@@ -1,3 +1,12 @@
+/* CSS */
+import '/src/assets/css/base/fonts.css'
+import '/src/assets/css/base/properties.css'
+import '/src/assets/css/base/reset.css'
+import '/src/assets/css/components/text.css'
+import '/src/assets/css/components/forms.css'
+import '/src/assets/css/components/buttons.css'
+import '/src/assets/css/components/card.css'
+
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'

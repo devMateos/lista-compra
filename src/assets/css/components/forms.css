@@ -1,0 +1,8 @@
+.form__input {
+  align-items: center;
+  background-color: var(--white);
+  border: var(--border-02);
+  border-radius: 4px;
+  display: flex;
+  padding: var(--spacing-M) var(--spacing-S);
+}

@@ -1,22 +1,30 @@
 <template>
   <div class="home-container">
-    <h1 class="title">Categorías de Productos</h1>
+    <div class="categories-top">
+      <input
+        class="form__input"
+        type="text"
+        v-model="searchTerm"
+        placeholder="Buscar categoría"
+        required
+      />
+      <button @click="goToAllProducts" class="button big primary-light">
+        Ver todos los productos
+      </button>
+    </div>
     <div class="categories-grid">
       <CategoryCard
-        v-for="category in categories"
+        v-for="category in filteredCategories"
         :key="category.id"
         :category="category"
         @click="goToCategory(category.id)"
       />
     </div>
-    <button @click="goToAllProducts" class="all-products-btn">
-      Ver todos los productos
-    </button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import CategoryCard from '@/components/CategoryCard.vue'
 import { db } from '@/services/firebase'
@@ -24,6 +32,7 @@ import { collection, getDocs } from 'firebase/firestore'
 
 const categories = ref([])
 const router = useRouter()
+const searchTerm = ref('')
 
 const fetchCategories = async () => {
   try {
@@ -46,36 +55,44 @@ onMounted(fetchCategories)
 const goToAllProducts = () => {
   router.push('/category/all')
 }
+
+const filteredCategories = computed(() => {
+  return categories.value.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+})
 </script>
 
 <style scoped>
 .home-container {
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
+  padding: var(--spacing-M);
 }
 
-.title {
-  font-size: 2rem;
-  text-align: center;
-  color: #333;
-  margin-bottom: 1.5rem;
+.categories-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-M);
 }
 
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  gap: var(--spacing-M);
+  margin-bottom: var(--spacing-XL);
 }
-.all-products-btn {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+
+@media(min-width: 768px) {
+  .categories-top {
+    flex-direction: row;
+    justify-content: space-between;
+
+    input {
+      width: 300px;
+    }
+  }
 }
-.all-products-btn:hover {
-  background-color: #45a049;
-}
+
 </style>

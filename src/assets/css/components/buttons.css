@@ -1,0 +1,55 @@
+.button {
+  align-items: center;
+  border-radius: 4px;
+  box-shadow: var(--small-shadow);
+  color: var(--black);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+.button.big {
+  border: var(--border-02);
+  padding: var(--spacing-M);
+}
+.button.small-btn {
+  border: var(--border-01);
+  border-radius: 4px;
+  padding: var(--spacing-XS);
+}
+.button.primary {
+  background-color: var(--primary-02);
+}
+.button.primary:hover {
+  background-color: var(--primary-01);
+}
+.button.primary-light {
+  background-color: var(--primary-01);
+}
+.button.primary-light:hover {
+  background-color: var(--primary-02);
+}
+.button.active,
+.button:active {
+  background-color: var(--primary-02);
+  box-shadow: var(--small-shadow-inverse);
+  transform: translate(3px, 3px)
+}
+.button.red {
+  background-color: #FF8B83;
+}
+.button.red:hover {
+  background-color: #FF4B3E;
+}
+.button.green {
+  background-color: #ABFCDA;
+}
+.button.green:hover {
+  background-color: #0CE48B;
+}
+.button.white {
+  background-color: var(--white);
+}
+.button.white:hover {
+  background-color: #f0f0f0;
+}

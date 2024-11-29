@@ -1,31 +1,32 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1 class="title">Iniciar Sesión</h1>
+      <h1>Bienvenid@!
+        <img src="/src/assets/icons/hi.svg" alt="Mano saludando" srcset="" width="24" height="24">
+      </h1>
       <form @submit.prevent="loginWithEmail" class="login-form">
-        <input
-          type="email"
-          v-model="email"
-          placeholder="Correo electrónico"
-          required
-        />
-        <input
-          type="password"
-          v-model="password"
-          placeholder="Contraseña"
-          required
-        />
-        <button type="submit" class="btn-login">Entrar</button>
+        <div>
+          <label for="email">Usuario</label>
+          <input
+          class="form__input"
+            type="email"
+            v-model="email"
+            placeholder="Introduce tu email"
+            required
+          />
+        </div>
+        <div>
+          <label for="password">Contraseña</label>
+          <input
+          class="form__input"
+            type="password"
+            v-model="password"
+            placeholder="Contraseña"
+            required
+          />
+        </div>
+        <button type="submit" class="button big primary-light">Entrar</button>
       </form>
-
-      <!-- Botón para iniciar sesión con Google -->
-      <!-- <div class="divider">
-        <span>o</span>
-      </div>
-
-      <button @click="loginWithGoogle" class="btn-google">
-        Iniciar sesión con Google
-      </button> -->
     </div>
   </div>
 </template>
@@ -54,120 +55,51 @@ const loginWithEmail = async () => {
   }
 }
 
-const loginWithGoogle = async () => {
-  const provider = new GoogleAuthProvider()
-  try {
-    await signInWithPopup(auth, provider)
-    router.push('/home')
-  } catch (error) {
-    console.error('Error al iniciar sesión con Google:', error)
-    alert('Error al iniciar sesión con Google.')
-  }
-}
 </script>
 
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
   align-items: center;
+  background-color: var(--primary-02);
+  display: flex;
   height: 100vh;
-  padding: 1rem;
-  background-color: #f5f5f5;
+  justify-content: center;
 }
 
 .login-box {
+  background-color: var(--white);
+  border: var(--border-02);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-L);
   max-width: 400px;
-  width: 100%;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-XXL) var(--spacing-L);
   text-align: center;
+  width: clamp(200px, 400px, 90%);
+
+  h1 {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-S);
+    justify-content: center;
+  }
 }
 
-.title {
-  font-size: 1.8rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.login-form input {
-  width: 100%;
-  padding: 0.8rem;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-login:hover {
-  background-color: #45a049;
-}
-
-.divider {
+.login-form{
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem 0;
-  font-size: 0.9rem;
-  color: #666;
-}
+  flex-direction: column;
+  gap: var(--spacing-M);
 
-.divider span {
-  margin: 0 0.5rem;
-}
-
-.divider:before,
-.divider:after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background-color: #ccc;
-}
-
-.btn-google {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: #4285f4;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-google:hover {
-  background-color: #357ae8;
-}
-
-.btn-google img {
-  width: 20px;
-  margin-right: 8px;
-}
-
-@media (max-width: 480px) {
-  .login-box {
-    padding: 1.5rem;
+  label {
+    font-weight: bold;
+    margin-bottom: var(--spacing-S);
+    text-align: start;
   }
 
-  .title {
-    font-size: 1.5rem;
-  }
+ input {
+  width: 100%;
+}
 }
 </style>

@@ -1,0 +1,71 @@
+:root {
+    /* COLORS */
+  
+    /* Primary colors */
+    --primary-01: #F1A7B6;
+    --primary-02: #D7798C;
+    --primary-03: #B45064;
+    --primary-04: #942D42;
+
+    /* Neutral colors */
+    --white: #FFFFFF;
+    --light: #F4F4F6;
+    --light-gray: #E6E6E9;
+    --gray: #9999A1;
+    --dark: #66666E;
+    --black: #000000;
+    /* State colors */
+    --color-state-success: #1F845A;
+    --color-state-warning: #FF9800;
+    --color-state-error: #C9372C;
+    --color-state-info: #0094ff;
+
+    /* FONTS */
+    --font: "Montserrat";
+  
+    --font-size-XXL: 4rem;
+    --font-size-XL: 3.2rem;
+    --font-size-L: 2.4rem;
+    --font-size-M: 2rem;
+    --font-size-S: 1.6rem;
+    --font-size-XS: 1.2rem;
+  
+    /* SPACING */
+    --spacing-min-unit: 0.4rem;
+  
+    --spacing-XS: calc(var(--spacing-min-unit) * 1); /* 4px  */
+    --spacing-S: calc(var(--spacing-min-unit) * 2); /* 8px  */
+    --spacing-M: calc(var(--spacing-min-unit) * 4); /* 16px */
+    --spacing-L: calc(var(--spacing-min-unit) * 6); /* 24px */
+    --spacing-XL: calc(var(--spacing-min-unit) * 8); /* 32px */
+    --spacing-XXL: calc(var(--spacing-min-unit) * 10); /* 40px */
+
+  
+    /* BORDERS */
+    --border-01: solid 1px var(--black);
+    --border-02: solid 2px var(--black);
+  
+    /* Shadow */
+    --shadow: 4px 4px 0px 0px rgb(0, 0, 0, 1);
+    --small-shadow: 2px 2px 0px 0px rgb(0, 0, 0, 1);
+    --shadow-inverse: -2px -2px 0px 0px rgb(0, 0, 0, 1);
+    --small-shadow-inverse: -1px -1px 0px 0px rgb(0, 0, 0, 1);
+  }
+  
+  /* RESPONSIVE MEASURES */
+  @media (max-width: 768px) {
+    :root {
+      --responsive-margin: 16px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 992px) {
+    :root {
+      --responsive-margin: 24px;
+    }
+  }
+  @media (min-width: 992px) {
+    :root {
+      --responsive-margin: 32px;
+    }
+  }
+  
