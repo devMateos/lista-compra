@@ -5,6 +5,20 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Primero maneja los assets estáticos
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+  force = true
+
+# Luego maneja la SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -19,9 +33,3 @@
   for = "/*.css"
   [headers.values]
     Content-Type = "text/css"
-
-# Manejo de SPA
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
