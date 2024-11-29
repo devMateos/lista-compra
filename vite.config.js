@@ -14,18 +14,23 @@ export default defineConfig({
     }
   },
   build: {
+    clean: true,
     rollupOptions: {
       output: {
-        entryFileNames: '[name].[hash].js',
-        chunkFileNames: '[name].[hash].js',
-        assetFileNames: '[name].[hash].[ext]'
+        entryFileNames: `assets/[name]-[hash].js`,
+        chunkFileNames: `assets/[name]-[hash].js`,
+        assetFileNames: `assets/[name]-[hash].[ext]`,
       }
     },
     manifest: true,
+    assetsInlineLimit: 0
   },
   server: {
+    hmr: {
+      overlay: true,
+    },
     headers: {
-      'Cache-Control': 'public, max-age=31536000'
-    }
+      'Cache-Control': 'no-store',
+    },
   }
 })
