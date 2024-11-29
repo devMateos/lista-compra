@@ -22,21 +22,7 @@ export default defineConfig({
         chunkFileNames: `assets/[name]-[hash].js`,
         assetFileNames: `assets/[name]-[hash].[ext]`,
       }
-    },
-    manifest: true,
-    assetsInlineLimit: 0,
-    publicDir: 'public',
-    base: '/'
+    }
   },
-  server: {
-    hmr: {
-      overlay: true,
-    },
-    headers: {
-      'Cache-Control': 'no-store',
-    },
-  },
-  worker: {
-    enabled: false
-  }
+  base: '/'
 })
