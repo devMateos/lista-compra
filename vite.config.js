@@ -12,5 +12,20 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[hash].[ext]'
+      }
+    },
+    manifest: true,
+  },
+  server: {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000'
+    }
   }
 })
