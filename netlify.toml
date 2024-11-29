@@ -1,0 +1,16 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+
+# Configuración específica para archivos JavaScript
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "text/javascript"
+
+# Configuración para manejo de SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 

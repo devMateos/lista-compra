@@ -23,7 +23,9 @@ export default defineConfig({
       }
     },
     manifest: true,
-    assetsInlineLimit: 0
+    assetsInlineLimit: 0,
+    publicDir: 'public',
+    base: '/'
   },
   server: {
     hmr: {
