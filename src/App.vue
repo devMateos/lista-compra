@@ -118,7 +118,6 @@ const updateCategoryName = async () => {
 
       categoryName.value = newCategoryName.value.trim();
       closeEditModal();
-      console.log('Categoría actualizada con éxito.');
     } catch (error) {
       console.error('Error al actualizar la categoría:', error);
     }
@@ -146,7 +145,6 @@ const viewTitle = computed(() => {
 const showConfigButton = computed(() => {
   return route.path.startsWith('/category') && route.path !== '/category/all';
 })
-console.log(showConfigButton.value);
 
 // Añadir la función para eliminar la categoría
 const deleteCategory = async () => {
@@ -202,6 +200,9 @@ header {
 }
 main {
   overflow-y: auto;
+  > div {
+    padding-bottom: var(--spacing-XXL) !important;
+  }
 }
 main::-webkit-scrollbar {
   background-color: transparent;

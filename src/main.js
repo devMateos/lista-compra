@@ -38,11 +38,20 @@ onAuthStateChanged(auth, user => {
   }
 })
 
-// Eliminar cualquier service worker existente
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for(let registration of registrations) {
-      registration.unregister()
-    }
-  })
+// Detector de actualizaciones
+if (import.meta.env.PROD) {
+  let refreshing = false;
+
+  // Detecta cuando hay una nueva versión disponible
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem('lastVisit', Date.now().toString());
+  });
+
+  // Comprueba si hay una nueva versión al cargar
+  const lastVisit = localStorage.getItem('lastVisit');
+  const currentTime = Date.now();
+
+  if (lastVisit && (currentTime - parseInt(lastVisit)) > 3600000) { // 1 hora
+    window.location.reload(true);
+  }
 }
