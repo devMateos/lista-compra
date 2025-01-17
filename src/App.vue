@@ -179,7 +179,7 @@ const openEditModal = async () => {
 .template {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100svh;
   width: 100vw;
 }
 header {

@@ -62,7 +62,7 @@ const loginWithEmail = async () => {
   align-items: center;
   background-color: var(--primary-02);
   display: flex;
-  height: 100vh;
+  height: 100svh;
   justify-content: center;
 }
 
